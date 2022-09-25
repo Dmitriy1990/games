@@ -1,0 +1,16 @@
+.back{
+    padding: 10px 20px;
+    background: #fff;
+    color: var(--black);
+    display: inline-block;
+    font-size: 18px;
+    margin: 10px;
+}
+
+.title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 60px);
+}
