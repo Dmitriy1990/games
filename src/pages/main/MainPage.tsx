@@ -3,17 +3,17 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../store/hooks';
 import { AppDispatch } from '../../store/store';
 import noData from '../../assets/no-data.jpg';
-import { fetchGames, addGames } from '../../store/gamesSlice';
+import { fetchGames, addGames, setBalType, setSelect } from '../../store/gamesSlice';
 import { Link } from 'react-router-dom';
 import styles from './style.module.css';
 import { routes } from '../../constantes/routes';
 import { Helmet } from 'react-helmet';
 
 export const MainPage = () => {
-  const { data, loading, partData, provider, balances } = useAppSelector((state) => state.games);
+  const { data, loading, partData, provider, balances, select, balType } = useAppSelector(
+    (state) => state.games
+  );
   const dispatch = useDispatch<AppDispatch>();
-  const [select, setSelect] = useState('');
-  const [balType, setBalType] = useState('');
 
   useEffect(() => {
     dispatch(fetchGames({ provider: select, balType: balType }));
@@ -24,11 +24,11 @@ export const MainPage = () => {
   };
 
   const onChangeSelect = (ev: React.ChangeEvent<HTMLSelectElement>) => {
-    if (select !== ev.target.value) setSelect(ev.target.value);
+    if (select !== ev.target.value) dispatch(setSelect(ev.target.value));
   };
 
   const onChangeBalance = (ev: React.ChangeEvent<HTMLSelectElement>) => {
-    if (balType !== ev.target.value) setBalType(ev.target.value);
+    if (balType !== ev.target.value) dispatch(setBalType(ev.target.value));
   };
 
   return (
@@ -37,7 +37,7 @@ export const MainPage = () => {
         <title>Games</title>
       </Helmet>
       <div className={styles['select-wrap']}>
-        <select className={styles.select} onChange={onChangeSelect}>
+        <select className={styles.select} onChange={onChangeSelect} value={select}>
           <option value="">All</option>
           {provider.map((prov) => (
             <option key={prov} value={prov}>
@@ -45,7 +45,7 @@ export const MainPage = () => {
             </option>
           ))}
         </select>
-        <select className={styles.select} onChange={onChangeBalance}>
+        <select className={styles.select} onChange={onChangeBalance} value={balType}>
           <option value="">All</option>
           {balances.map((prov) => (
             <option key={prov} value={prov}>
@@ -54,9 +54,7 @@ export const MainPage = () => {
           ))}
         </select>
       </div>
-
       <p>Total: {data.length}</p>
-
       <ul className={styles['card-container']}>
         {partData.length ? (
           partData.map((game) => (

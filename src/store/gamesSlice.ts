@@ -4,6 +4,7 @@ import { Sort, RootGames, SoftswissAztecMagic } from '../types/game';
 
 const LIMIT = 12;
 
+// на каждую смену фильтра должен быть запрос к серверу
 export const fetchGames = createAsyncThunk('games/fetchGames', async function (sort: Sort) {
   const response = await getGames();
   const newData = Object.entries(response)
@@ -34,12 +35,20 @@ export const games = createSlice({
     limit: 0,
     provider: [] as string[],
     balances: [] as string[],
-    sortBalance: ''
+    sortBalance: '',
+    select: '',
+    balType: ''
   },
   reducers: {
     addGames(state) {
       state.partData.push(...state.data.slice(state.limit, state.limit + LIMIT));
       state.limit = state.limit += LIMIT;
+    },
+    setSelect(state, action) {
+      state.select = action.payload;
+    },
+    setBalType(state, action) {
+      state.balType = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -71,5 +80,5 @@ export const games = createSlice({
   }
 });
 
-export const { addGames } = games.actions;
+export const { addGames, setBalType, setSelect } = games.actions;
 export default games.reducer;
